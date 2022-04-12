@@ -9,18 +9,21 @@ def _single_impute_col(df: pd.DataFrame, feature_name: list, strategy: str = "me
     col = df.loc[:, feature_name]
     df.loc[:, feature_name] = imputer.fit_transform(col.values.reshape(-1, 1))
     
-    return df
+    return df, imputer 
     
     
 def _perform_single_impute(df: pd.DataFrame, features_to_impute: list) -> pd.DataFrame:
     """Single impute all columns of df in features_to_import"""
     df_ts = df.copy()
+    imputers = dict()
 
     # Simple impute over each time series column (i.e. across different patients)
     for feature_name in features_to_impute:
-        df_ts = _single_impute_col(df_ts, feature_name)
+        df_ts, imputer = _single_impute_col(df_ts, feature_name)
+
+        imputers[feature_name: imputer]
             
-    return df_ts
+    return df_ts, imputers
 
 
 def _prop_missing(df: pd.DataFrame) -> dict:
@@ -51,6 +54,6 @@ def single_impute(df: pd.DataFrame, missing_val_threshold: float) -> pd.DataFram
     """Single impute columms of df for which less than missing_val_threshold of rows have missing values"""
     
     features_to_impute = _find_impute_features(df, missing_val_threshold)
-    df_imputed = _perform_single_impute(df, features_to_impute)      
+    df_imputed, imputers = _perform_single_impute(df, features_to_impute)      
     
-    return df_imputed
+    return df_imputed, imputers
