@@ -21,7 +21,7 @@ def _perform_single_impute(df: pd.DataFrame, features_to_impute: list) -> pd.Dat
     for feature_name in features_to_impute:
         df_ts, imputer = _single_impute_col(df_ts, feature_name)
 
-        imputers[feature_name: imputer]
+        imputers[feature_name] = imputer
             
     return df_ts, imputers
 
