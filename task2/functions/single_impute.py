@@ -1,18 +1,21 @@
+from typing import Tuple
+
 import pandas as pd
+import numpy as np
 
 from sklearn.impute import SimpleImputer
 
-def _single_impute_col(df: pd.DataFrame, feature_name: list, strategy: str = "mean") -> pd.DataFrame:
+def _single_impute_col(df: pd.DataFrame, feature_name: list, strategy: str = "mean") -> Tuple[pd.DataFrame, object]:
     """Single impute a single column feature_name of df"""
     imputer = SimpleImputer(strategy=strategy)
     
     col = df.loc[:, feature_name]
     df.loc[:, feature_name] = imputer.fit_transform(col.values.reshape(-1, 1))
     
-    return df, imputer 
+    return df, imputer
     
     
-def _perform_single_impute(df: pd.DataFrame, features_to_impute: list) -> pd.DataFrame:
+def _perform_single_impute(df: pd.DataFrame, features_to_impute: list) -> Tuple[pd.DataFrame, dict]:
     """Single impute all columns of df in features_to_import"""
     df_ts = df.copy()
     imputers = dict()
@@ -50,7 +53,7 @@ def _find_impute_features(df: pd.DataFrame, missing_threshold: float) -> list:
     return features_to_impute
 
 
-def single_impute(df: pd.DataFrame, missing_val_threshold: float) -> pd.DataFrame:
+def single_impute(df: pd.DataFrame, missing_val_threshold: float) -> Tuple[pd.DataFrame, dict]:
     """Single impute columms of df for which less than missing_val_threshold of rows have missing values"""
     
     features_to_impute = _find_impute_features(df, missing_val_threshold)

@@ -8,9 +8,10 @@ from sklearn.impute import IterativeImputer
 
 def multivariate_impute(df: pd.DataFrame, 
                         max_iter: int = 10, 
-                        estimator = BayesianRidge()) -> Tuple[pd.DataFrame, IterativeImputer]:
-    
-    imputer = IterativeImputer(estimator=estimator, max_iter=max_iter)
-    df_imputed = imputer.fit_transform(df) 
+                        estimator = BayesianRidge(),
+                        verbose: int = 0) -> Tuple[pd.DataFrame, IterativeImputer]:
+
+    imputer = IterativeImputer(estimator=estimator, max_iter=max_iter, verbose=verbose)
+    df_imputed = pd.DataFrame(imputer.fit_transform(df))
     
     return df_imputed, imputer
