@@ -1,4 +1,5 @@
 #### SCORER ###
+import pandas as pd
 
 def scorer(data: pd.DataFrame, model, splitter: float) -> tuple:
     """Fits a given model to a given dataset and 
@@ -24,11 +25,20 @@ def scorer(data: pd.DataFrame, model, splitter: float) -> tuple:
     return (training_score, test_score)
 
 
+def evaluate_model(model, X_train, y_train, X_val, y_val) -> tuple:
+
+    model.fit(X_train, y_train)
+
+    training_score = model.score(X_train, y_train)
+    test_score = model.score(X_val, y_val)
+
+    return (training_score, test_score)
+
 
 
 ### SCOREBOARD ###
 
-def scoreboard(models: list, data: pd.DataFrame, splitter: float) -> dict:
+def scoreboard(models: list, X_train, y_train, X_val, y_val) -> dict:
     """Takes a list of several models and runs them on the same dataset.
     Training and Test score are written in a dictionary."""
 
@@ -37,6 +47,6 @@ def scoreboard(models: list, data: pd.DataFrame, splitter: float) -> dict:
 
     # Scoring of the models
     for m in models:
-        scores[m] = scorer(data, m, splitter)
+        scores[m] = evaluate_model(m, X_train, y_train, X_val, y_val)
 
     return scores
