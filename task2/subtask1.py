@@ -1,4 +1,5 @@
 from typing import List
+import argparse
 
 from random import random
 import pandas as pd
@@ -101,9 +102,15 @@ def main(in_paths: str, update: bool = False, verbose: int = 0):
     
     
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Run model pipeline for subtask 1')
+    parser.add_argument("-u", "--update-imputation", action="store_true", help="Update the imputated dataset, and save as csv")
+    parser.add_argument("-v", "--verbose", action="store_const", const=2, help="Verbose output")
+    args = vars(parser.parse_args())
+
+    update_imputation = args["update_imputation"]
+    verbose = args["verbose"] if not "None" else 0
+
+    # Paths for loading original data used for imputation
     in_paths =["data/train_features_ts.csv", "data/train_labels.csv", "data/test_features_ts.csv"]
 
-    update = True # If imputation should be run again, else just read from csv
-    verbose = 2
-
-    main(in_paths, update=update, verbose=verbose)
+    main(in_paths, update=update_imputation, verbose=verbose)
