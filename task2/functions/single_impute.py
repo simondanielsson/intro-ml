@@ -47,15 +47,16 @@ def _find_impute_features(df: pd.DataFrame, missing_threshold: float) -> list:
     features_to_impute = []
     
     for feature, val in missing.items():
-        if val < missing_threshold:
+        if val <= missing_threshold:
             features_to_impute += [feature]
-            
+        
+    print("Single imputing", 100*len(features_to_impute)/df.shape[1], "% of the columns")
     return features_to_impute
 
 
 def single_impute(df: pd.DataFrame, missing_val_threshold: float) -> Tuple[pd.DataFrame, dict]:
     """Single impute columms of df for which less than missing_val_threshold of rows have missing values"""
-    
+    print("Single imputing...")
     features_to_impute = _find_impute_features(df, missing_val_threshold)
     df_imputed, imputers = _perform_single_impute(df, features_to_impute)      
     

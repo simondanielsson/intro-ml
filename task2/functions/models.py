@@ -1,9 +1,36 @@
 from typing import List
 
+import numpy as np
+
+from sklearn.linear_model import LinearRegression, LassoCV
+from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+from sklearn.dummy import DummyClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
+
+from xgboost import XGBRFClassifier
+
 def get_models(subtask: int) -> List:
+    random_state = 1
     
     if subtask == 1: 
-        models = [LogisticRegression(max_iter=500), LogisticRegression(solver="saga", max_iter=500), AdaBoostClassifier(random_state=random_state), LogisticRegressionCV()]
+        models = [
+            AdaBoostClassifier(random_state=random_state), 
+            LassoCV(random_state=random_state),
+            LinearRegression(),
+            DummyClassifier(),
+            GridSearchCV(
+                RandomForestClassifier(random_state=random_state), 
+                param_grid={
+                    "min_samples_split": [2, 5, 10, 50, 100],
+                }
+            ),
+            XGBRFClassifier(objective='binary:logistic', eval_metric = 'auc', use_label_encoder=False, random_state=random_state)
+            #SVC(kernel="poly"), 
+            #SVC()
+            #*[SVC(C=c) for c in np.logspace(-2, 1, num=3)],
+            #*[SVC(C=c, kernel="poly") for c in np.logspace(-2, 1, num=3)]
+        ]
 
         return models 
 

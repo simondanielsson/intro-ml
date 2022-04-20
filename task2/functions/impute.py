@@ -5,7 +5,9 @@ import pandas as pd
 from functions.single_impute import single_impute
 from functions.multiple_impute import multivariate_impute
 
-OUT_PATHS = (
+# Threshold at 0.7
+# DO NOT USE
+THRESHOLD_0_7 = (
         "data/X_train_imputed.csv", 
         "data/X_val_imputed.csv",
         "data/X_test_imputed.csv",
@@ -13,19 +15,23 @@ OUT_PATHS = (
         "data/y_val.csv"
 )
 
+# Only single imputed
+THRESHOLD_1 = (
+        "data/X_train_imputed_1 2.csv", 
+        "data/X_val_imputed_1 2.csv",
+        "data/X_test_imputed_1 2.csv",
+        "data/y_train_1 2.csv",
+        "data/y_val_1 2.csv"
+)
 
-def impute_single_df(df: pd.DataFrame, threshold: float, max_iter: int, verbose: int = 0) -> pd.DataFrame:
-    """Perform single imputation if proportion of missing values of a column is 
-    less than threshold, and performs multivariate imputation otherwise.
-    
-    Note that mutlivariate imputation takes very long to converge; you'll likely want to 
-    perform it once and save it to disk."""
-
-    df_single, single_imputers = single_impute(df, threshold) 
-    df_multi, multi_imputer = multivariate_impute(df_single, max_iter=max_iter, verbose=verbose)
-
-    # You'll need the imptuter objects when imputing any new data, e.g. the test set 
-    return df_multi, (single_imputers, multi_imputer)
+THRESHOLD_0_8 = (
+        "data/X_train_imputed_08.csv", 
+        "data/X_val_imputed_08.csv",
+        "data/X_test_imputed_08.csv",
+        "data/y_train.csv",
+        "data/y_val.csv"
+)
+PATHS = THRESHOLD_0_8
 
 
 def impute_new_df(df: pd.DataFrame, single_imputers: dict, multi_imputer) -> pd.DataFrame:
@@ -38,9 +44,30 @@ def impute_new_df(df: pd.DataFrame, single_imputers: dict, multi_imputer) -> pd.
         df[feature] = imputer.transform(df[feature].values.reshape(-1, 1))
 
     # Multiple impute the remaining columns
-    df = pd.DataFrame(multi_imputer.transform(df))
+    if multi_imputer is not None:
+        df = pd.DataFrame(multi_imputer.transform(df))
 
     return df 
+
+
+def impute_single_df(df: pd.DataFrame, threshold: float, max_iter: int, verbose: int = 0) -> pd.DataFrame:
+    """Perform single imputation if proportion of missing values of a column is 
+    less than threshold, and performs multivariate imputation otherwise.
+    
+    Note that mutlivariate imputation takes very long to converge; you'll likely want to 
+    perform it once and save it to disk.
+    
+    If threshold == 1 then multi_imputer is None"""
+
+    df_single, single_imputers = single_impute(df, threshold) 
+    if threshold == 1:
+        df_multi = df_single
+        multi_imputer = None
+    else:
+        df_multi, multi_imputer = multivariate_impute(df_single, max_iter=max_iter, verbose=verbose)
+
+    # You'll need the imptuter objects when imputing any new data, e.g. the test set 
+    return df_multi, (single_imputers, multi_imputer)
 
 
 def impute(X_train, X_val, X_test, y_train, y_val, threshold, max_iter, verbose) -> None:
@@ -53,13 +80,13 @@ def impute(X_train, X_val, X_test, y_train, y_val, threshold, max_iter, verbose)
         impute_new_df(X_test, single_imputers, multi_imputer)
     )
 
-    for path, data in zip(OUT_PATHS, [X_train, X_val, X_test, y_train, y_val]):
+    for path, data in zip(PATHS, [X_train, X_val, X_test, y_train, y_val]):
         if verbose != 0:
             print(f"Saving data to {path}")
-        data.to_csv(path)
+        data.to_csv(path, header=data.columns)
 
 
 def load_imputed_data() -> List[pd.DataFrame]:
-    data = [pd.read_csv(path) for path in OUT_PATHS]
+    data = [pd.read_csv(path, index_col=0) for path in PATHS]
 
     return data

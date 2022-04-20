@@ -1,4 +1,5 @@
 #### SCORER ###
+from pyexpat import model
 import pandas as pd
 
 def scorer(data: pd.DataFrame, model, splitter: float) -> tuple:
@@ -47,6 +48,7 @@ def scoreboard(models: list, X_train, y_train, X_val, y_val) -> dict:
 
     # Scoring of the models
     for m in models:
+        print(f"Evaluating model...")
         scores[m] = evaluate_model(m, X_train, y_train, X_val, y_val)
 
     return scores

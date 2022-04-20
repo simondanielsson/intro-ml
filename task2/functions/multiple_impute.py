@@ -11,7 +11,9 @@ def multivariate_impute(df: pd.DataFrame,
                         estimator = BayesianRidge(),
                         verbose: int = 0) -> Tuple[pd.DataFrame, IterativeImputer]:
 
+    print("Multiple imputing...")
     imputer = IterativeImputer(estimator=estimator, max_iter=max_iter, verbose=verbose)
     df_imputed = pd.DataFrame(imputer.fit_transform(df))
     
+    print("Finished multiple imputing...")
     return df_imputed, imputer
