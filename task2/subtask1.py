@@ -9,9 +9,11 @@ from functions.scoring import scoreboard
 from functions.select_feature import select_feature, select_labels
 from functions.impute import impute, load_imputed_data
 from functions.preprocess import preprocess 
+from functions.models import get_models 
 
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.ensemble import AdaBoostClassifier
 
 
 def load_data(paths: List[str]) -> List[pd.DataFrame]:
@@ -30,18 +32,18 @@ def present_results(scores: dict) -> None:
     pprint(scores)
 
 
-def main(in_paths: str, update: bool = False, verbose: int = 0):
+def main(in_paths: str, subtask: int, update: bool = False, verbose: int = 0) -> None:
     """Evaluate models on data set
     in_path: path of original data
     If update, then imputation is re-done and saved as csv. Otherwise, load imputed data from csv"""
-
+    random_state = 1
+    
     if update:
         # Load train and test data
         X, y, X_test = load_data(in_paths)
 
         # Split data into train and validation set
         train_size = 0.7 # TODO: set
-        random_state = 1
 
         X_train, X_val, y_train, y_val = train_test_split(X, y, train_size=train_size, random_state=random_state)
     
@@ -76,8 +78,6 @@ def main(in_paths: str, update: bool = False, verbose: int = 0):
     """
 
     # Select label features for this specific problem 
-    subtask = 1 # TODO: set
-
     label_indeces_to_select = select_labels(subtask)
     y_train, y_val = (
         y_train.loc[:, label_indeces_to_select],
@@ -89,7 +89,8 @@ def main(in_paths: str, update: bool = False, verbose: int = 0):
     X_train, X_val, X_test = preprocess(X_train, X_val, X_test)
 
     # Evaluate models
-    models = [LogisticRegression(max_iter=500), LogisticRegression(solver="saga", max_iter=500)]
+    models = get_models(subtask)
+    print(f"Testing models {models}")
 
     print(f"Evaluating models {models}")
     scores = scoreboard(models, X_train, y_train, X_val, y_val)
@@ -103,14 +104,16 @@ def main(in_paths: str, update: bool = False, verbose: int = 0):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run model pipeline for subtask 1')
+    parser.add_argument("subtask", metavar="N", type=int, nargs=1, help="Choice of subtask to be run")
     parser.add_argument("-u", "--update-imputation", action="store_true", help="Update the imputated dataset, and save as csv")
     parser.add_argument("-v", "--verbose", action="store_const", const=2, help="Verbose output")
     args = vars(parser.parse_args())
 
+    subtask = args["subtask"][0]
     update_imputation = args["update_imputation"]
     verbose = args["verbose"] if not "None" else 0
 
     # Paths for loading original data used for imputation
     in_paths =["data/train_features_ts.csv", "data/train_labels.csv", "data/test_features_ts.csv"]
 
-    main(in_paths, update=update_imputation, verbose=verbose)
+    main(in_paths, subtask=subtask, update=update_imputation, verbose=verbose)

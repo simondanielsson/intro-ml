@@ -24,4 +24,13 @@ def select_feature(X_train: pd.DataFrame, y_train: pd.DataFrame) -> list:
 def select_labels(subtask: int) -> List[str]:
     # TODO: implement depeneding on subtask
 
-    return "LABEL_BaseExcess"
+    labels = {
+        "1": "LABEL_BaseExcess, LABEL_Fibrinogen, LABEL_AST, LABEL_Alkalinephos, LABEL_Bilirubin_total, LABEL_Lactate, LABEL_TroponinI, LABEL_SaO2, LABEL_Bilirubin_direct, LABEL_EtCO2".split(", "),
+        "2": None,
+        "3": None 
+    }
+
+    labels_ = labels[str(subtask)]
+    print(f"Chose labels {labels_}" )
+    
+    return labels_ 
