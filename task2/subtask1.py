@@ -15,9 +15,20 @@ from functions.predict_labels import predict_labels
 
 from sklearn.model_selection import train_test_split
 
-def save_predictions(labels_pred, subtask):
+PATHS_PRED = {
+    "1": "predictions/pred_1.csv",
+    "2": "predictions/pred_2.csv",
+    "3": "predictions/pred_3.csv",
+}
+
+def save_predictions(labels_pred: pd.DataFrame, subtask: int) -> None:
     """Save predictions to csv for a specific subtask to some path"""
-    pass 
+
+    subtask_ = str(subtask)
+
+    labels_pred.to_csv(PATHS_PRED[subtask_], header=labels_pred.columns)
+
+    print(f"Predictions saved ot to {PATHS_PRED[subtask_]}.")
 
 
 def load_data(paths: List[str]) -> List[pd.DataFrame]:
@@ -54,7 +65,7 @@ def main(in_paths: str, subtask: int, threshold: float = None, verbose: int = 0)
         X_train, X_val, y_train, y_val = train_test_split(X, y, train_size=train_size, random_state=random_state)
     
         # Impute and load data
-        max_iter = 1
+        max_iter = 10
         
         impute(
             X_train, 

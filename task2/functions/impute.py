@@ -5,15 +5,6 @@ import pandas as pd
 from functions.single_impute import single_impute
 from functions.multiple_impute import multivariate_impute
 
-# Threshold at 0.7
-# DO NOT USE
-THRESHOLD_0_7 = (
-        "data/X_train_imputed.csv", 
-        "data/X_val_imputed.csv",
-        "data/X_test_imputed.csv",
-        "data/y_train.csv",
-        "data/y_val.csv"
-)
 
 # Only single imputed
 THRESHOLD_1 = (
@@ -29,6 +20,14 @@ THRESHOLD_0_95 = (
         "data/X_train_imputed_08.csv", 
         "data/X_val_imputed_08.csv",
         "data/X_test_imputed_08.csv",
+        "data/y_train.csv",
+        "data/y_val.csv"
+)
+
+THRESHOLD_0_7 = (
+        "data/X_train_imputed_07.csv", 
+        "data/X_val_imputed_07.csv",
+        "data/X_test_imputed_07.csv",
         "data/y_train.csv",
         "data/y_val.csv"
 )
@@ -112,19 +111,3 @@ def load_imputed_data() -> List[pd.DataFrame]:
     return data
 
 
-
-"""
-SUBTASK 1.
-Results on 0.95 threshold dataset:
-
-DummyClassifier(): (0.5804753309265944, 0.5786980171959993),
-AdaBoostClassifier(random_state=1): (0.6981046931407943, 0.6739778908580453),
-LinearRegression(): (0.08428222112626971, -11704924773.964266),
-LassoCV(random_state=1): (0.06783578519022548, 0.04429180435277791),
-GridSearchCV(RandomForestClassifier(),
-    param_grid={'min_samples_split': [2, 5, 10, 50, 100]}): (0.9998495788206979, 0.6818740129847342),
-XGBRFClassifier(...): (0.7002105896510229, 0.6683628706790665)}
-
-
-Depending on the results in the other tasks this might actually be sufficient performance 
-"""

@@ -72,6 +72,9 @@ def scoreboard(models: list, subtask: int, X_train, y_trains: List[pd.Series], X
         model = model_class(**kwargs)
 
         model_name = type(model).__name__
+        while model_name in scores:
+            model_name += "_" 
+
         print(f"Evaluating {model_name}...")
 
         scores_model = dict()

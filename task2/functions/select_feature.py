@@ -26,7 +26,7 @@ def select_labels(subtask: int, y_train: pd.DataFrame, y_val: pd.DataFrame) -> L
 
     LABELS = {
         "1": "LABEL_BaseExcess, LABEL_Fibrinogen, LABEL_AST, LABEL_Alkalinephos, LABEL_Bilirubin_total, LABEL_Lactate, LABEL_TroponinI, LABEL_SaO2, LABEL_Bilirubin_direct, LABEL_EtCO2".split(", "),
-        "2": "LABEL_Sepsis",
+        "2": ["LABEL_Sepsis"],
         "3": "LABEL_RRate, LABEL_ABPm, LABEL_SpO2, LABEL_Heartrate".split(", ") 
     }
 
