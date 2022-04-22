@@ -105,8 +105,9 @@ def main(in_paths: str, subtask: int, threshold: float = None, verbose: int = 0)
 
     # Evaluate models
     print(f"Evaluating models...")
+    
     scores = scoreboard(models, subtask, X_train, y_trains, X_val, y_vals)
-
+    
     # Present scores
     present_results(scores)
 

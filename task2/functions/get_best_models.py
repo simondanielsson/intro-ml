@@ -14,7 +14,8 @@ def get_best_models(scores: dict, subtask: int) -> List[Tuple[str, object]]:
     for label in list_of_labels:
         dict_of_scores = {}
         for model in list_of_models:
-            dict_of_scores[model] = scores[model][label][1][1]
+            trained_model = scores[model][label][0]
+            dict_of_scores[trained_model] = scores[model][label][1][1]
         best_models.append((label, max(dict_of_scores, key=dict_of_scores.get)))
         
 

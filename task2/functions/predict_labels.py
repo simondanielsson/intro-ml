@@ -17,6 +17,6 @@ def predict_labels(best_models: List[Tuple[str, object]], subtask: int, X_test) 
         else:
             label_p = best_models[i][1].predict(X_test)
             
-        labels_pred[label_name] = label_p    
+        labels_pred[label_name] = label_p   
     
     return labels_pred
