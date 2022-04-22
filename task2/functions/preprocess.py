@@ -10,13 +10,17 @@ def preprocess(X_train, X_val, X_test):
     X_train = pd.DataFrame(scaler.transform(X_train))
     X_val = pd.DataFrame(scaler.transform(X_val))
 
+    print("-"*50)
     print("Train data stats:")
-    print("avg mean", X_train.describe().loc["mean", :10].mean())
-    print("avg std", X_train.describe().loc["std", :10].mean())
+    print("avg mean:", X_train.describe().loc["mean", :10].mean())
+    print("avg std:", X_train.describe().loc["std", :10].mean())
+    print(" ")
 
+    print("-"*50)
     print("Val data stats:")
-    print("avg mean", X_val.describe().loc["mean", :10].mean())
-    print("avg std", X_val.describe().loc["std", :10].mean())
+    print("avg mean:", X_val.describe().loc["mean", :10].mean())
+    print("avg std:", X_val.describe().loc["std", :10].mean())
+    print("-"*50)
 
     return (
         scaler.transform(X_train), 

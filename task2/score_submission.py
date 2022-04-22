@@ -18,14 +18,14 @@ def get_score(df_true, df_submission):
     print(task1, task2, task3)
     return score
 
+if __name__ == "__main__":
+    filename = 'sample.zip'
+    df_submission = pd.read_csv(filename)
 
-filename = 'sample.zip'
-df_submission = pd.read_csv(filename)
-
-# generate a baseline based on sample.zip
-df_true = pd.read_csv(filename)
-for label in TESTS + ['LABEL_Sepsis']:
+    # generate a baseline based on sample.zip
+    df_true = pd.read_csv(filename)
+    for label in TESTS + ['LABEL_Sepsis']:
     # round classification labels
-    df_true[label] = np.around(df_true[label].values)
+        df_true[label] = np.around(df_true[label].values)
 
-print('Score of sample.zip with itself as groundtruth', get_score(df_true, df_submission))
+    print('Score of sample.zip with itself as groundtruth', get_score(df_true, df_submission))

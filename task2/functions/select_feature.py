@@ -1,4 +1,3 @@
-from asyncio.proactor_events import _ProactorBaseWritePipeTransport
 from typing import List
 
 from sklearn.feature_selection import SelectFromModel 
@@ -23,31 +22,17 @@ def select_feature(X_train: pd.DataFrame, y_train: pd.DataFrame) -> list:
     return mask_sfm
 
 def select_labels(subtask: int, y_train: pd.DataFrame, y_val: pd.DataFrame) -> List[pd.Series]:
-    """Selects or transforms label dataframe into a single target column, depending on subtask"""
-    # TODO: implement depeneding on subtask
+    """Selects the label columns of interest and returns them as a list of series"""
 
     LABELS = {
         "1": "LABEL_BaseExcess, LABEL_Fibrinogen, LABEL_AST, LABEL_Alkalinephos, LABEL_Bilirubin_total, LABEL_Lactate, LABEL_TroponinI, LABEL_SaO2, LABEL_Bilirubin_direct, LABEL_EtCO2".split(", "),
-        "2": None,
-        "3": None 
+        "2": "LABEL_Sepsis",
+        "3": "LABEL_RRate, LABEL_ABPm, LABEL_SpO2, LABEL_Heartrate".split(", ") 
     }
 
     labels = LABELS[str(subtask)]
     
-    if subtask == 1:
-        def get_target(df: pd.DataFrame) -> pd.DataFrame:
-            return df.loc[:, labels].apply(lambda row : row.any(), axis=1)
+    y_trains = [y_train.loc[:, label] for label in labels]
+    y_vals = [y_val.loc[:, label] for label in labels]
 
-        # Construct new boolean column: 1 if any of labels are 1, else 0
-        target_train, target_val = get_target(y_train), get_target(y_val)
-
-        return target_train, target_val
-
-    if subtask == 2:
-        pass
-
-    if subtask == 3:
-        pass
-    
-
-    return y_train, y_val
+    return y_trains, y_vals 

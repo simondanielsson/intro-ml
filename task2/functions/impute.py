@@ -24,14 +24,26 @@ THRESHOLD_1 = (
         "data/y_val_1 2.csv"
 )
 
-THRESHOLD_0_8 = (
+# 0.95 threshold, almost only single imputed 
+THRESHOLD_0_95 = (
         "data/X_train_imputed_08.csv", 
         "data/X_val_imputed_08.csv",
         "data/X_test_imputed_08.csv",
         "data/y_train.csv",
         "data/y_val.csv"
 )
-PATHS = THRESHOLD_0_8
+
+# Joschi's dataset
+THRESHOLD_MINMAX = (
+        "data/X_train_imputed_minmax.csv", 
+        "data/X_val_imputed_minmax.csv",
+        "data/X_test_imputed_minmax.csv",
+        "data/y_train.csv",
+        "data/y_val.csv"
+)
+
+
+PATHS = THRESHOLD_1
 
 
 def impute_new_df(df: pd.DataFrame, single_imputers: dict, multi_imputer) -> pd.DataFrame:
@@ -70,7 +82,7 @@ def impute_single_df(df: pd.DataFrame, threshold: float, max_iter: int, verbose:
     return df_multi, (single_imputers, multi_imputer)
 
 
-def impute(X_train, X_val, X_test, y_train, y_val, threshold, max_iter, verbose) -> None:
+def impute(X_train, X_val, X_test, y_train, y_val, threshold, max_iter = 100, verbose = 0) -> None:
     """Impute data on basis of training set and save as csv"""   
 
     X_train, (single_imputers, multi_imputer) = impute_single_df(X_train, threshold, max_iter, verbose)
@@ -86,7 +98,29 @@ def impute(X_train, X_val, X_test, y_train, y_val, threshold, max_iter, verbose)
         data.to_csv(path, header=data.columns)
 
 
+
+
+
+
 def load_imputed_data() -> List[pd.DataFrame]:
     data = [pd.read_csv(path, index_col=0) for path in PATHS]
 
     return data
+
+
+
+"""
+SUBTASK 1.
+Results on 0.95 threshold dataset:
+
+DummyClassifier(): (0.5804753309265944, 0.5786980171959993),
+AdaBoostClassifier(random_state=1): (0.6981046931407943, 0.6739778908580453),
+LinearRegression(): (0.08428222112626971, -11704924773.964266),
+LassoCV(random_state=1): (0.06783578519022548, 0.04429180435277791),
+GridSearchCV(RandomForestClassifier(),
+    param_grid={'min_samples_split': [2, 5, 10, 50, 100]}): (0.9998495788206979, 0.6818740129847342),
+XGBRFClassifier(...): (0.7002105896510229, 0.6683628706790665)}
+
+
+Depending on the results in the other tasks this might actually be sufficient performance 
+"""

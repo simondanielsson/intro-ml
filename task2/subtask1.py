@@ -1,11 +1,9 @@
-from pyexpat.errors import XML_ERROR_ATTRIBUTE_EXTERNAL_ENTITY_REF
 from typing import List
 import argparse
 
 from random import random
 import pandas as pd
 from pprint import pprint
-from scipy import stats
 
 from functions.scoring import scoreboard
 from functions.select_feature import select_feature, select_labels
@@ -67,8 +65,8 @@ def main(in_paths: str, subtask: int, threshold: float = None, verbose: int = 0)
     X_train, X_val, X_test, y_train, y_val = load_imputed_data()
 
     # Select features
-    print("Selecting features...")
     """
+    print("Selecting features...")
     feature_indeces_to_select = select_feature(X_train, y_train)
     X_train, X_val, X_test= (
         X_train.iloc[:,feature_indeces_to_select],
@@ -78,26 +76,36 @@ def main(in_paths: str, subtask: int, threshold: float = None, verbose: int = 0)
     """
 
     # Select label features for this specific problem 
-    y_train, y_val = select_labels(subtask, y_train, y_val)
+    print("Selecting labels...")
+    y_trains, y_vals = select_labels(subtask, y_train, y_val)
 
     # Preprocess data
     print("Preprocessing data...")
     X_train, X_val, X_test = preprocess(X_train, X_val, X_test)
     
-
     # Evaluate models
+    print("Fetching models...")
     models = get_models(subtask)
-    print(f"Testing models {models}...")
 
     # Evaluate models
     print(f"Evaluating models...")
-    scores = scoreboard(models, X_train, y_train, X_val, y_val)
+    scores = scoreboard(models, X_train, y_trains, X_val, y_vals)
 
     # Present scores
     present_results(scores)
 
-    # Make predictions on test set and save as csv 
-    # TODO
+    # Make predictions on test set
+    # TODO:
+    # Fetch best model for each label column
+    # Make probabilistic predictions on test data
+    # Save as csv 
+
+
+    """
+    Here we should output class probabilities for subtask 1 & 2, i.e. use for instance model.predict_proba
+
+
+    """
     
     
 if __name__ == "__main__":
@@ -116,8 +124,8 @@ if __name__ == "__main__":
     threshold = float(t) if t is not None else None 
 
     # Paths for loading original data used for imputation
-    in_paths =["data/train_features_ts 2.csv", "data/train_labels.csv", "data/test_features_ts 2.csv"]
-
+    #in_paths =["data/train_features_ts 2.csv", "data/train_labels.csv", "data/test_features_ts 2.csv"]
+    in_paths =["data/train_features_minmax.csv", "data/train_labels.csv", "data/test_features_minmax.csv"]
     main(in_paths, subtask=subtask, threshold=threshold, verbose=verbose)
 
 
