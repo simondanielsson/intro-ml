@@ -11,7 +11,12 @@ def predict_labels(best_models: List[Tuple[str, object]], subtask: int, X_test) 
 
     for i in range(len(best_models)):
         label_name = best_models[i][0]
-        label_p = best_models[i][1]
+        
+        if subtask == 1 or subtask == 2:
+            label_p = best_models[i].predict_proba(X_test)
+        else:
+            label_p = best_models[i].predict(X_test)
+            
         labels_pred[label_name] = label_p    
     
     return labels_pred
