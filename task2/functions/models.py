@@ -11,14 +11,27 @@ from sklearn.model_selection import GridSearchCV
 from xgboost import XGBRFClassifier
 
 def get_models(subtask: int) -> List:
+    """
+    Fetches a list of models to be evaluated for a specific subtask.
+    Put DummyClassifier first model in the list for desired behaviour. 
+    """
     random_state = 1
     
     if subtask == 1: 
         models = [
-            DummyClassifier(),
-            LinearRegression(),
-            LassoCV(random_state=random_state),
-            AdaBoostClassifier(random_state=random_state), 
+            (DummyClassifier, dict()),
+            (XGBRFClassifier, {
+                    "objective":'binary:logistic', 
+                    "eval_metric" : 'auc', 
+                    "use_label_encoder":False, 
+                    'random_state':random_state
+                }
+            )
+        ]
+        
+        
+        """    
+        LinearRegression(),
             GridSearchCV(
                 RandomForestClassifier(random_state=random_state), 
                 param_grid={
@@ -26,9 +39,9 @@ def get_models(subtask: int) -> List:
                 },
                 scoring="roc_auc"
             )
+            AdaBoostClassifier(random_state=random_state), 
         ]
-        
-        #XGBRFClassifier(objective='binary:logistic', eval_metric = 'auc', use_label_encoder=False, random_state=random_state)
+        """
         #SVC(kernel="poly"), 
         #SVC()
         #*[SVC(C=c) for c in np.logspace(-2, 1, num=3)],

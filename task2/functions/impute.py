@@ -34,7 +34,7 @@ THRESHOLD_0_95 = (
 )
 
 # Joschi's dataset
-THRESHOLD_MINMAX = (
+THRESHOLD_MINMAX_1 = (
         "data/X_train_imputed_minmax.csv", 
         "data/X_val_imputed_minmax.csv",
         "data/X_test_imputed_minmax.csv",
@@ -42,8 +42,15 @@ THRESHOLD_MINMAX = (
         "data/y_val.csv"
 )
 
+THRESHOLD_MINMAX_0 = (
+        "data/X_train_imputed_minmax0.csv", 
+        "data/X_val_imputed_minmax0.csv",
+        "data/X_test_imputed_minmax0.csv",
+        "data/y_train.csv",
+        "data/y_val.csv"
+)
 
-PATHS = THRESHOLD_1
+PATHS = THRESHOLD_0_95
 
 
 def impute_new_df(df: pd.DataFrame, single_imputers: dict, multi_imputer) -> pd.DataFrame:
@@ -96,9 +103,6 @@ def impute(X_train, X_val, X_test, y_train, y_val, threshold, max_iter = 100, ve
         if verbose != 0:
             print(f"Saving data to {path}")
         data.to_csv(path, header=data.columns)
-
-
-
 
 
 

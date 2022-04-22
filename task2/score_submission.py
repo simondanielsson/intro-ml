@@ -7,10 +7,13 @@ TESTS = ['LABEL_BaseExcess', 'LABEL_Fibrinogen', 'LABEL_AST', 'LABEL_Alkalinepho
          'LABEL_Lactate', 'LABEL_TroponinI', 'LABEL_SaO2',
          'LABEL_Bilirubin_direct', 'LABEL_EtCO2']
 
+filename = 'sample.zip'
+df_true = pd.read_csv(filename)
 
 def get_score(df_true, df_submission):
     df_submission = df_submission.sort_values('pid')
     df_true = df_true.sort_values('pid')
+
     task1 = np.mean([metrics.roc_auc_score(df_true[entry], df_submission[entry]) for entry in TESTS])
     task2 = metrics.roc_auc_score(df_true['LABEL_Sepsis'], df_submission['LABEL_Sepsis'])
     task3 = np.mean([0.5 + 0.5 * np.maximum(0, metrics.r2_score(df_true[entry], df_submission[entry])) for entry in VITALS])

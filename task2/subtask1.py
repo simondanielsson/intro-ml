@@ -10,9 +10,14 @@ from functions.select_feature import select_feature, select_labels
 from functions.impute import impute, load_imputed_data
 from functions.preprocess import preprocess 
 from functions.models import get_models 
+from functions.get_best_models import get_best_models
+from functions.predict_labels import predict_labels
 
 from sklearn.model_selection import train_test_split
 
+def save_predictions(labels_pred, subtask):
+    """Save predictions to csv for a specific subtask to some path"""
+    pass 
 
 
 def load_data(paths: List[str]) -> List[pd.DataFrame]:
@@ -89,29 +94,29 @@ def main(in_paths: str, subtask: int, threshold: float = None, verbose: int = 0)
 
     # Evaluate models
     print(f"Evaluating models...")
-    scores = scoreboard(models, X_train, y_trains, X_val, y_vals)
+    scores = scoreboard(models, subtask, X_train, y_trains, X_val, y_vals)
 
     # Present scores
     present_results(scores)
 
-    # Make predictions on test set
-    # TODO:
     # Fetch best model for each label column
+    best_models = get_best_models(scores, subtask)
+
     # Make probabilistic predictions on test data
-    # Save as csv 
+    labels_pred = predict_labels(best_models, subtask, X_test)
 
+    # Save predictions to csv
+    save_predictions(labels_pred, subtask)
+    
+    
+    
 
-    """
-    Here we should output class probabilities for subtask 1 & 2, i.e. use for instance model.predict_proba
-
-
-    """
     
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run model pipeline for subtask 1')
     parser.add_argument("subtask", metavar="N", type=int, nargs=1, help="Choice of subtask to be run")
-    parser.add_argument("-u", "--update-imputation", action="store", metavar="T", help="Update the imputated dataset using threshold, and save as csv")
+    parser.add_argument("-u", "--update-imputation", action="store", metavar="T", help="Update the imputated dataset using threshold T, and save as csv")
     parser.add_argument("-v", "--verbose", action="store_const", const=2, help="Verbose output")
     args = vars(parser.parse_args())
 
