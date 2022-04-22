@@ -17,3 +17,4 @@ def get_best_models(scores: dict, subtask: int) -> List[Tuple[str, object]]:
     """
 
     print('hello')
+    print('bye')
