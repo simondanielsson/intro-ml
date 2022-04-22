@@ -2,13 +2,17 @@ from typing import List
 
 import numpy as np
 
-from sklearn.linear_model import LinearRegression, LassoCV
+from sklearn.linear_model import LinearRegression, RidgeCV, LogisticRegression
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
-from sklearn.dummy import DummyClassifier
-from sklearn.svm import SVC
+from sklearn.dummy import DummyClassifier, DummyRegressor
+from sklearn.svm import SVC, SVR
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neural_network import MLPClassifier, MLPRegressor
+
+from sklearn.metrics import roc_auc_score, r2_score
 from sklearn.model_selection import GridSearchCV
 
-from xgboost import XGBRFClassifier
+from xgboost import XGBRFClassifier, XGBRFRegressor
 
 def get_models(subtask: int) -> List:
     """
@@ -17,40 +21,44 @@ def get_models(subtask: int) -> List:
     """
     random_state = 1
     
-    if subtask == 1: 
+    if subtask == 1 or subtask == 2: 
         models = [
             (DummyClassifier, dict()),
-            (XGBRFClassifier, {
+            (LogisticRegression, dict()),
+            *[(XGBRFClassifier, {
                     "objective":'binary:logistic', 
-                    "eval_metric" : 'auc', 
+                    "eval_metric" : roc_auc_score,
+                    "n_estimators": n_estimators,
+                    "max_depth": max_depth,
                     "use_label_encoder":False, 
                     'random_state':random_state
                 }
-            )
+            ) for max_depth in [4, 6] for n_estimators in [50, 100]],
+            *[(RandomForestClassifier, {
+                "max_depth": max_depth,
+                "n_estimators": n_estimators, 
+                "random_state": random_state}) 
+                for max_depth in [4, 5, 10] for n_estimators in [50, 100]],
+            *[(AdaBoostClassifier, {"random_state": random_state, "n_estimators": n_estimators}) for n_estimators in [25, 50, 75]],
+            (MLPClassifier, dict())
         ]
-        
-        
-        """    
-        LinearRegression(),
-            GridSearchCV(
-                RandomForestClassifier(random_state=random_state), 
-                param_grid={
-                    "min_samples_split": [2, 5, 10, 50, 100],
-                },
-                scoring="roc_auc"
-            )
-            AdaBoostClassifier(random_state=random_state), 
-        ]
-        """
-        #SVC(kernel="poly"), 
-        #SVC()
-        #*[SVC(C=c) for c in np.logspace(-2, 1, num=3)],
-        #*[SVC(C=c, kernel="poly") for c in np.logspace(-2, 1, num=3)]
 
         return models 
 
-    if subtask == 2:
-        raise NotImplementedError()
-
     if subtask == 3:
-        raise NotImplementedError()
+        models = [
+            (DummyRegressor, dict()),
+            (LinearRegression, dict()),
+            (RidgeCV, {"scoring": "r2"}),
+            *[(XGBRFRegressor, {
+                "eval_metric": roc_auc_score,
+                "max_depth": max_depth,
+                "n_estimators": n_estimators, 
+                "random_state": random_state
+            }) for max_depth in [2, 4, 6] for n_estimators in [50, 100, 250]],
+            (SVR, {"kernel": "poly", }),
+            (KNeighborsRegressor, dict()),
+            (MLPRegressor, dict())
+        ]
+
+        return models
