@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-from sklearn.linear_model import LinearRegression, RidgeCV, LogisticRegression
+from sklearn.linear_model import LinearRegression, RidgeCV, LogisticRegression, ElasticNet
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from sklearn.svm import SVC, SVR
@@ -49,6 +49,7 @@ def get_models(subtask: int) -> List:
             (DummyRegressor, dict()),
             (LinearRegression, dict()),
             (RidgeCV, {"scoring": "r2"}),
+            *[(ElasticNet, {"alpha": alpha}) for alpha in [1, 3, 5, 10, 30]],
             *[(XGBRFRegressor, {
                 "eval_metric": roc_auc_score,
                 "max_depth": max_depth,

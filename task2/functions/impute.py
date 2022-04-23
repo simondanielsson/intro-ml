@@ -40,6 +40,14 @@ THRESHOLD_0_7 = (
         "data/y_val.csv"
 )
 
+THRESHOLD_0_8 = (
+        "data/X_train_imputed_1 3.csv", 
+        "data/X_val_imputed_1 3.csv",
+        "data/X_test_imputed_1 3.csv",
+        "data/y_train.csv",
+        "data/y_val.csv"
+)
+
 # Joschi's dataset
 THRESHOLD_MINMAX_1 = (
         "data/X_train_imputed_minmax.csv", 

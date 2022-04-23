@@ -97,8 +97,8 @@ def main(in_paths: str, subtask: int, threshold: float = None, no_save: bool = F
     for x in [X_train, X_val, X_test]:
         x.columns = column_names
 
-    pid_val = pd.Series(list(X_val.index))
-    pid_test = pd.Series(list(X_test.index))
+    #pid_val = pd.Series(list(X_val.index))
+    #pid_test = pd.Series(list(X_test.index))
 
     # Select label features for this specific problem 
     print("Selecting labels...")
@@ -121,12 +121,13 @@ def main(in_paths: str, subtask: int, threshold: float = None, no_save: bool = F
     present_results(scores)
 
     # Fetch best model for each label column
-    best_models = get_best_models(scores, subtask)
+    best_models, avg_score = get_best_models(scores, subtask)
+    print(f"Average score for this subtask: {avg_score}")
 
     # Make probabilistic predictions on test data
     labels_pred_test, labels_pred_val = predict_labels(best_models, subtask, X_test, X_val)
-    for pred, pid in zip([labels_pred_val, labels_pred_test], [pid_val, pid_test]):
-        pred = pd.concat([pid, pred])
+    #for pred, pid in zip([labels_pred_val, labels_pred_test], [pid_val, pid_test]):
+    #    pred = pd.concat([pid, pred])
 
     # Save predictions to csv
     if no_save: 

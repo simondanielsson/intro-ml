@@ -1,4 +1,5 @@
 from typing import List, Tuple
+import numpy as np
 
 def get_best_models(scores: dict, subtask: int) -> List[Tuple[str, object]]:
     """
@@ -10,16 +11,22 @@ def get_best_models(scores: dict, subtask: int) -> List[Tuple[str, object]]:
     best_models = []
     list_of_models = list(scores)
     list_of_labels = list(scores[list_of_models[0]])
+    scores_ = []
 
     for label in list_of_labels:
         dict_of_scores = {}
         for model in list_of_models:
             trained_model = scores[model][label][0]
             dict_of_scores[trained_model] = scores[model][label][1][1]
-        best_models.append((label, max(dict_of_scores, key=dict_of_scores.get)))
         
+        best_model = max(dict_of_scores, key=dict_of_scores.get)
+        scores_.append(dict_of_scores[best_model])
 
-    return best_models
+        best_models.append((label, best_model))
+
+    avg_score = np.mean(scores_)
+
+    return best_models, avg_score
 
 
     """
