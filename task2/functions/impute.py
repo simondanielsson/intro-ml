@@ -24,6 +24,14 @@ THRESHOLD_0_95 = (
         "data/y_val.csv"
 )
 
+THRESHOLD_0_95_NEW = (
+        "data/X_train_imputed_08_new.csv", 
+        "data/X_val_imputed_08_new.csv",
+        "data/X_test_imputed_08_new.csv",
+        "data/y_train.csv",
+        "data/y_val.csv"
+)
+
 THRESHOLD_0_7 = (
         "data/X_train_imputed_07.csv", 
         "data/X_val_imputed_07.csv",

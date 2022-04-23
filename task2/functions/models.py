@@ -12,7 +12,7 @@ from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.metrics import roc_auc_score, r2_score
 from sklearn.model_selection import GridSearchCV
 
-#from xgboost import XGBRFClassifier, XGBRFRegressor
+from xgboost import XGBRFClassifier, XGBRFRegressor
 
 def get_models(subtask: int) -> List:
     """
@@ -24,9 +24,8 @@ def get_models(subtask: int) -> List:
     if subtask == 1 or subtask == 2: 
         models = [
             (DummyClassifier, dict()),
-            (AdaBoostClassifier, dict())
-            ];""",
-            [(XGBRFClassifier, {
+            (AdaBoostClassifier, dict()),
+            *[(XGBRFClassifier, {
                     "objective":'binary:logistic', 
                     "eval_metric" : roc_auc_score,
                     "n_estimators": n_estimators,
@@ -40,9 +39,8 @@ def get_models(subtask: int) -> List:
                 "n_estimators": n_estimators, 
                 "random_state": random_state}) 
                 for max_depth in [4, 5, 10] for n_estimators in [50, 100]],
-            [(AdaBoostClassifier, {"random_state": random_state, "n_estimators": n_estimators}) for n_estimators in [25, 50, 75]],
-            (MLPClassifier, dict())
-        ]"""
+            *[(AdaBoostClassifier, {"random_state": random_state, "n_estimators": n_estimators}) for n_estimators in [25, 50, 75]],
+        ]
 
         return models 
 
@@ -57,7 +55,7 @@ def get_models(subtask: int) -> List:
                 "n_estimators": n_estimators, 
                 "random_state": random_state
             }) for max_depth in [2, 4, 6] for n_estimators in [50, 100, 250]],
-            (SVR, {"kernel": "poly", }),
+            #(SVR, {"kernel": "poly", }),
             (KNeighborsRegressor, dict()),
             (MLPRegressor, dict())
         ]
