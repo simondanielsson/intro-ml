@@ -158,7 +158,9 @@ if __name__ == "__main__":
     threshold = float(t) if t is not None else None 
 
     # Paths for loading original data used for imputation
+    # These hand-crafted feature files were created in a notebook environment: see functions/create_data.ipynb for more details. 
     in_paths =["data/train_features_ts 2.csv", "data/train_labels.csv", "data/test_features_ts 2.csv"]
+    #in_paths = ["data/X_train_stat.csv", "data/train_labels.csv", "data/X_test_stat.csv"] 
     #in_paths =["data/train_features_minmax.csv", "data/train_labels.csv", "data/test_features_minmax.csv"]
     main(in_paths, subtask=subtask, threshold=threshold, no_save=no_save, verbose=verbose)
 
